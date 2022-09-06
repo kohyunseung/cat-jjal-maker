@@ -54,9 +54,10 @@
         async function handleSubmitClick(e) {
           e.preventDefault();
           if(value === '') {
-            alert('공백은 안됩니다.')
+            alert('공백은 안됩니다.');
             return;
           }
+          if(includesHangul(value)) return alert('한글은 안됩니다.');
           updateMainCat(value);
         }
 
