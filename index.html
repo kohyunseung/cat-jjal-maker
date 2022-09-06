@@ -57,8 +57,7 @@
             alert('공백은 안됩니다.')
             return;
           }
-          const url = await fetchCat(value);
-          updateMainCat(url);
+          updateMainCat(value);
         }
 
         return (
@@ -102,13 +101,23 @@
       }
       const App = () => {
         const [count, setCount] = React.useState(jsonLocalStorage.getItem('counter') || 1);
-        const [mainCatImage, setMainCatImage] = React.useState(CAT1);
+        const [mainCatImage, setMainCatImage] = React.useState(null);
         const [favorites, setFavorites] = React.useState(jsonLocalStorage.getItem('favorites') || [])
 
-        function updateMainCat(url) {
+        async function initCatImage() {
+            const newCat = await fetchCat('first Cat');
+            setMainCatImage(newCat);
+        }
+
+        React.useEffect(() => {
+          initCatImage();
+        }, [])
+
+        async function updateMainCat(value) {
+          const newCat = await fetchCat(value);
           const nextCount = count + 1;
           setCount(nextCount);
-          setMainCatImage(url);
+          setMainCatImage(newCat);
           jsonLocalStorage.setItem('counter', nextCount);
         }
 
@@ -122,7 +131,7 @@
           <div>
             <Title>{count} 번째 고양이</Title>
             <FormItem updateMainCat={updateMainCat}/>
-            <MainCard src={mainCatImage} onHeartClick={handleHeartClick} />
+            {mainCatImage ? <MainCard src={mainCatImage} onHeartClick={handleHeartClick} /> : <div>로딩중...</div>}
             <Favorites favorites={favorites}/>
           </div>
         )
