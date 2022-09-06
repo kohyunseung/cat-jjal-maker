@@ -41,7 +41,7 @@
         return <h2> {children}</h2>
       }
 
-      const FormItem = ({updateMainCat}) => {   
+      const FormItem = ({updateMainCat, onChangeImage}) => {   
         const [value, setValue] = React.useState('');
         const [errorMessage, setErrorMessage] = React.useState('');     
         
@@ -51,10 +51,14 @@
           setValue(e.target.value.toUpperCase())
         }
 
-        function handleSubmitClick(e){
+        async function handleSubmitClick(e) {
           e.preventDefault();
-          if(value === '') alert('공백은 안됩니다.')
-          updateMainCat();
+          if(value === '') {
+            alert('공백은 안됩니다.')
+            return;
+          }
+          const url = await fetchCat(value);
+          updateMainCat(url);
         }
 
         return (
@@ -101,10 +105,10 @@
         const [mainCatImage, setMainCatImage] = React.useState(CAT1);
         const [favorites, setFavorites] = React.useState(jsonLocalStorage.getItem('favorites') || [])
 
-        function updateMainCat() {
+        function updateMainCat(url) {
           const nextCount = count + 1;
           setCount(nextCount);
-          setMainCatImage(CAT2);
+          setMainCatImage(url);
           jsonLocalStorage.setItem('counter', nextCount);
         }
 
