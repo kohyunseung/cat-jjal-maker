@@ -10,10 +10,19 @@
     body {
       text-align: center;
     }
-    .main-card button {
+    .main-card {
       position: relative;
-      left: -45px;
-      bottom: 15px;
+      text-align: center;
+      width:400px;
+    }
+    .main-card img{
+      display: block;
+      margin: 0px auto;
+    }
+    .main-card button {
+      position: absolute;
+      right: 0px;
+      bottom: 5px;
     }
     .favorites {
       list-style: none;
@@ -73,14 +82,16 @@
       const MainCard = ({src, onHeartClick, alreadyFavorite}) => {
         const heartIcon = alreadyFavorite ? FULL_HEART : EMPTY_HEART;
 
-        return (<div className="main-card">
-          <img
-            src={src}
-            alt="고양이"
-            width="400"
-          />
-          <button onClick={onHeartClick}>{heartIcon}</button>
-        </div>)
+        return (
+          <div className="main-card">
+            <img
+              src={src}
+              alt="고양이"
+              width="400"
+            />
+            <button onClick={onHeartClick}>{heartIcon}</button>
+          </div>
+        )
       }
 
       function CatItem({src}){
