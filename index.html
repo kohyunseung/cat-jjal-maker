@@ -70,15 +70,16 @@
         )
       }
 
-      const MainCard = ({src, onHeartClick}) => {
-        
+      const MainCard = ({src, onHeartClick, alreadyFavorite}) => {
+        const heartIcon = alreadyFavorite ? FULL_HEART : EMPTY_HEART;
+
         return (<div className="main-card">
           <img
             src={src}
             alt="고양이"
             width="400"
           />
-          <button onClick={onHeartClick}>🤍</button>
+          <button onClick={onHeartClick}>{heartIcon}</button>
         </div>)
       }
 
@@ -94,6 +95,7 @@
       }
 
       function Favorites({favorites}){
+        if(favorites.length === 0) return (<div style={{color: 'grey'}}>사진 위 하트를 눌러 고양이 사진을 저장해 봐요!</div>);
         return (
           <ul className="favorites">
           {favorites.map(cat => (<CatItem src={cat} key={cat}/>))}
@@ -101,9 +103,11 @@
         )
       }
       const App = () => {
-        const [count, setCount] = React.useState(jsonLocalStorage.getItem('counter') || 1);
+        const [count, setCount] = React.useState(jsonLocalStorage.getItem('counter'));
         const [mainCatImage, setMainCatImage] = React.useState(null);
         const [favorites, setFavorites] = React.useState(jsonLocalStorage.getItem('favorites') || [])
+
+        const alreadyFavorite = favorites.includes(mainCatImage)
 
         async function initCatImage() {
             const newCat = await fetchCat('first Cat');
@@ -123,6 +127,7 @@
         }
 
         function handleHeartClick() {
+          if(alreadyFavorite) return;
           const nextFavorites = [...favorites, mainCatImage];
           setFavorites(nextFavorites);
           jsonLocalStorage.setItem('favorites', nextFavorites);
@@ -130,10 +135,10 @@
 
         return (
           <div>
-            <Title>{count} 번째 고양이</Title>
+            <Title>{count ? `${count}번째 고양이` : '고양이'}</Title>
             <FormItem updateMainCat={updateMainCat}/>
-            {mainCatImage ? <MainCard src={mainCatImage} onHeartClick={handleHeartClick} /> : <div>로딩중...</div>}
-            <Favorites favorites={favorites}/>
+            { mainCatImage ? <MainCard src={mainCatImage} onHeartClick={handleHeartClick} alreadyFavorite={alreadyFavorite}/> : <div>로딩중...</div> }
+            <Favorites favorites={favorites} />
           </div>
         )
       } 
